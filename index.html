@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Bakery | Artisan Excellence</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Jost:wght@200;400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+
+    <style>
+        :root {
+            --gold: #C9A84C;
+            --charcoal: #121212;
+            --cream: #FAF5EB;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--charcoal);
+            color: var(--cream);
+            font-family: 'Jost', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Hero Container */
+        #hero {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3D Canvas Styling */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Overlay to ensure text is readable */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, transparent 20%, rgba(18,18,18,0.8) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Professional Text Layout */
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        .eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            font-weight: 300;
+            margin: 0;
+            line-height: 0.9;
+        }
+
+        h1 em {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            font-weight: 200;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+
+        .cta-button {
+            margin-top: 40px;
+            padding: 15px 40px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .cta-button:hover {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+    </style>
+</head>
+<body>
+
+    <section id="hero">
+        <div class="overlay"></div>
+        <div class="content">
+            <span class="eyebrow">Established 2024</span>
+            <h1>Royal <em>Bakery</em></h1>
+            <p class="description">Where Tradition Meets Artisan Perfection</p>
+            <button class="cta-button">View Collection</button>
+        </div>
+    </section>
+
+    <script>
+        // --- 3D SCENE SETUP ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.getElementById('hero').appendChild(renderer.domElement);
+
+        // Create an Abstract "Golden Wheat" Object
+        const geometry = new THREE.IcosahedronGeometry(15, 1);
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0xC9A84C, 
+            wireframe: true,
+            metalness: 1,
+            roughness: 0.2
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        // Lighting
+        const mainLight = new THREE.PointLight(0xffffff, 2000);
+        mainLight.position.set(20, 20, 20);
+        scene.add(mainLight);
+
+        const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambient);
+
+        camera.position.z = 50;
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            mesh.rotation.y += 0.003;
+            mesh.rotation.x += 0.002;
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
